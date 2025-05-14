@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Avalie o Caldinho do Neném</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .comment-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f7f7f7;
+      font-size: 1.1em;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn {
+      background: #27ae60;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background: #218c4f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Elogie o Atendimento e os Produtos</h1>
+    <div class="comment-box" id="commentBox">Clique em "Gerar Comentário" para gerar seu elogio...</div>
+    <button class="btn" onclick="generateComment()">Gerar Comentário</button>
+    <button class="btn" onclick="copyComment()">Copiar e Avaliar no Google Maps</button>
+  </div>
+  
+  <script>
+    // Arrays com diferentes partes do comentário
+    const servicePhrases = [
+      "O atendimento no Caldinho do Neném é",
+      "A experiência no Caldinho do Neném é",
+      "No Caldinho do Neném, o atendimento é",
+      "Para mim, o atendimento no Caldinho do Neném é"
+    ];
+    const serviceAdjectives = [
+      "excepcional", "impecável", "de alta qualidade",
+      "memorável", "incrível", "extraordinário", "irresistível"
+    ];
+    const garconPhrases = [
+      "o garçom Joel se destaca por sua simpatia e eficiência.",
+      "o garçom Joel demonstra um atendimento personalizado e atencioso.",
+      "garçom Joel surpreende com sua cordialidade e dedicação.",
+      "o atendimento do garçom Joel é sempre marcante e singular."
+    ];
+    const productPhrases = [
+      "Os caldinhos são servidos com perfeição, e os carangueiros chegam sempre frescos e saborosos.",
+      "Os pratos, como os caldinhos e carangueiros, são preparados com muito cuidado e resultam em sabores inigualáveis.",
+      "A cozinha oferece delícias tanto para almoço quanto para jantar, com caldinhos e carangueiros que impressionam.",
+      "Os produtos da casa se destacam pelo tempero e frescor, especialmente os caldinhos e carangueiros."
+    ];
+    const extraPhrases = [
+      "Além disso, o som ao vivo à noite cria um ambiente acolhedor e vibrante.",
+      "Para completar, a música ao vivo traz um toque especial que anima o local durante a noite.",
+      "O som ao vivo à noite proporciona um clima único e inesquecível.",
+      "E o som ao vivo à noite torna tudo ainda mais agradável e animado."
+    ];
+
+    // Conjunto para armazenar os comentários gerados e evitar repetições
+    let usedComments = new Set();
+    const maxComments = 5000; // Limite de comentários únicos
+
+    // Função auxiliar para pegar um item aleatório de um array
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Função para gerar um comentário com, no mínimo, 100 caracteres
+    function generateComment() {
+      if (usedComments.size >= maxComments) {
+        document.getElementById("commentBox").innerText =
+          "Você atingiu o máximo de comentários únicos! Atualize a página para gerar novos.";
+        return;
+      }
+      
+      let comment = randomItem(servicePhrases) + " " + randomItem(serviceAdjectives) + ". " +
+                    randomItem(garconPhrases) + " " + randomItem(productPhrases) + " " + randomItem(extraPhrases);
+      
+      // Garante que o comentário tenha pelo menos 100 caracteres
+      while(comment.length < 100) {
+        comment += " " + randomItem(extraPhrases);
+      }
+      
+      // Tenta gerar um comentário único (não repetido)
+      let attempts = 0;
+      while(usedComments.has(comment) && attempts < 100) {
+        comment = randomItem(servicePhrases) + " " + randomItem(serviceAdjectives) + ". " +
+                  randomItem(garconPhrases) + " " + randomItem(productPhrases) + " " + randomItem(extraPhrases);
+        while(comment.length < 100) {
+          comment += " " + randomItem(extraPhrases);
+        }
+        attempts++;
+      }
+      
+      usedComments.add(comment);
+      document.getElementById("commentBox").innerText = comment;
+    }
+
+    // Função para copiar o comentário e redirecionar para o Google Maps
+    function copyComment() {
+      const commentText = document.getElementById("commentBox").innerText;
+      if(commentText.startsWith("Clique em") || commentText.includes("Você atingiu o máximo")) {
+        alert("Por favor, gere um comentário antes de copiar.");
+        return;
+      }
+      navigator.clipboard.writeText(commentText)
+        .then(() => {
+          alert("Comentário copiado! Você será redirecionado para o Google Maps.");
+          window.open("https://www.google.com/maps/search/?api=1&query=Caldinho+do+Neném+Avaliacoes", "_blank");
+        })
+        .catch(err => {
+          alert("Erro ao copiar o comentário: " + err);
+        });
+    }
+  </script>
+</body>
+</html>
